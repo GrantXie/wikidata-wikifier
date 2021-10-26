@@ -88,7 +88,6 @@ def reconcile():
             output[ele] = {'result': []}
         for i in range(0, len(df)):
 
-
             sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
 
             sparql.setQuery("""
@@ -104,26 +103,29 @@ def reconcile():
 
             print(results)
 
-            results_df = pd.io.json.json_normalize(results['results']['bindings'])
+            results_df = pd.io.json.\
+                json_normalize(results['results']['bindings'])
             print(results_df)
 
             if len(results_df) == 0:
-               output[label[df['row'][i]]]['result'].append({
+                output[label[df['row'][i]]]['result'].append({
                     "id": df['kg_id'][i],
                     "name": df['kg_labels'][i],
-                    "type": [{"id": str(df['top5_class_count'][i]).split(':')[0],
+                    "type": [{"id": str(df['top5_class_count']
+                                        [i]).split(':')[0],
                               "name": "None"
                               }],
                     "score": df['siamese_prediction'][i],
                     "match": (float(df['siamese_prediction'][i]) > 0.95 and
                               int(df['rank'][i]) == 1)
                   })
-  
+
             else:
-               output[label[df['row'][i]]]['result'].append({
+                output[label[df['row'][i]]]['result'].append({
                     "id": df['kg_id'][i],
                     "name": df['kg_labels'][i],
-                    "type": [{"id": str(df['top5_class_count'][i]).split(':')[0],
+                    "type": [{"id": str(df['top5_class_count']
+                                        [i]).split(':')[0],
                               "name": results_df['label.value'][0]
                               }],
                     "score": df['siamese_prediction'][i],
@@ -156,7 +158,7 @@ def wikify():
     sep = '\t' if tsv else ","
     df = pd.read_csv(request.files['file'], dtype=object, sep=sep)
     df.fillna('', inplace=True)
- 
+
     _uuid_hex = uuid4().hex
 
     _path = 'user_files/{}_{}'.format(columns, _uuid_hex)
