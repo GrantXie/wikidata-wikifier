@@ -44,7 +44,6 @@ def reconcile():
     else:
         k = 3
         query = json.loads(query)
-        print(query)
 
         df = pd.DataFrame.from_dict(query, orient='index')
 
@@ -101,11 +100,8 @@ def reconcile():
             sparql.setReturnFormat(JSON)
             results = sparql.query().convert()
 
-            print(results)
-
             results_df = pd.io.json.\
                 json_normalize(results['results']['bindings'])
-            print(results_df)
 
             if len(results_df) == 0:
                 output[label[df['row'][i]]]['result'].append({
@@ -136,7 +132,6 @@ def reconcile():
         if callback:
             return str(callback) + '(' + str(output) + ')'
         else:
-            print(output)
             return json.dumps(output)
 
 
